@@ -9,6 +9,8 @@ description: Redux + Redux Toolkit state management patterns for frontend-develo
 
 This skill defines how global client state is managed in this project using Redux Toolkit (RTK). Follow these patterns consistently across all features.
 
+Frontend architecture in this repo follows `Feature-Sliced Design`. Keep global store wiring in `src/app/store/`, and co-locate reducers, thunks, and selectors in the owning slice's `model/` segment when practical.
+
 ---
 
 ## What Goes in Redux State
@@ -25,10 +27,10 @@ Only put data in Redux if it meets one or more of these criteria:
 
 ## Slice Pattern
 
-One slice per feature domain. Keep slices in `src/store/<feature>/`.
+One Redux slice per app-wide concern. Keep slice logic in the owning FSD slice such as `src/features/<feature>/model/` or `src/entities/<entity>/model/`. Only the shared store setup lives in `src/app/store/`.
 
 ```typescript
-// src/store/auth/authSlice.ts
+// src/features/auth/model/slice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState {
@@ -84,9 +86,9 @@ export default authSlice.reducer;
 Use `createAsyncThunk` for all side effects that interact with an API.
 
 ```typescript
-// src/store/auth/authThunks.ts
+// src/features/auth/model/thunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { authService } from "@/services/authService";
+import { authService } from "../api/authService";
 
 export const loginThunk = createAsyncThunk(
   "auth/login",
@@ -103,8 +105,8 @@ export const loginThunk = createAsyncThunk(
 Co-locate selectors with their slice. Name them `select<FeatureDescription>`.
 
 ```typescript
-// src/store/auth/authSelectors.ts
-import type { RootState } from "@/store";
+// src/features/auth/model/selectors.ts
+import type { RootState } from "@/app/store/store";
 
 export const selectCurrentUser = (state: RootState) => state.auth.currentUser;
 export const selectAuthStatus = (state: RootState) => state.auth.status;
@@ -128,9 +130,9 @@ export const selectUserDisplayName = createSelector(
 ## Store Setup
 
 ```typescript
-// src/store/index.ts
+// src/app/store/store.ts
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./auth/authSlice";
+import { authReducer } from "@/features/auth";
 
 export const store = configureStore({
   reducer: {
@@ -146,9 +148,9 @@ export type AppDispatch = typeof store.dispatch;
 Typed hooks — create once and reuse everywhere:
 
 ```typescript
-// src/store/hooks.ts
+// src/app/store/hooks.ts
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "./index";
+import type { RootState, AppDispatch } from "./store";
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector = <T>(selector: (state: RootState) => T) =>
@@ -160,17 +162,25 @@ export const useAppSelector = <T>(selector: (state: RootState) => T) =>
 ## Folder Structure
 
 ```
-src/store/
-  index.ts          ← configureStore + RootState + AppDispatch
-  hooks.ts          ← useAppDispatch, useAppSelector
-  auth/
-    authSlice.ts
-    authThunks.ts
-    authSelectors.ts
-  orders/
-    ordersSlice.ts
-    ordersThunks.ts
-    ordersSelectors.ts
+src/
+├── app/
+│   └── store/
+│       ├── store.ts          ← configureStore + RootState + AppDispatch
+│       └── hooks.ts          ← useAppDispatch, useAppSelector
+├── features/
+│   └── auth/
+│       ├── api/
+│       ├── model/
+│       │   ├── slice.ts
+│       │   ├── thunks.ts
+│       │   └── selectors.ts
+│       └── index.ts
+└── entities/
+    └── cart/
+        ├── model/
+        │   ├── slice.ts
+        │   └── selectors.ts
+        └── index.ts
 ```
 
 ---
@@ -181,4 +191,5 @@ src/store/
 - Never access `store.getState()` outside of tests — use `useAppSelector` in components
 - Keep reducers pure — no API calls, no side effects
 - Keep slices focused — one domain per slice, not one slice for the entire app
-- Export reducer as default, export actions and selectors as named exports
+- Register reducers in `src/app/store/store.ts`, but keep business-specific Redux logic in the owning FSD slice
+- Export reducers, actions, and selectors through the slice's public API instead of deep imports

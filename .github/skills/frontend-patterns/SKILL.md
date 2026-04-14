@@ -9,18 +9,21 @@ description: React and TypeScript patterns and conventions for frontend-develope
 
 React + TypeScript patterns and conventions for the `frontend-developer`. These are the agreed patterns to follow consistently across the codebase.
 
+Frontend architecture in this repo follows `Feature-Sliced Design`. Read `.github/skills/feature-sliced-design/SKILL.md` before deciding where code belongs or how slices may import each other.
+
 ---
 
 ## Component Design
 
 ### Component Types
 
-| Type              | Purpose                          | Has State?      | Makes API Calls? |
-| ----------------- | -------------------------------- | --------------- | ---------------- |
-| Page component    | Top-level route component        | Yes (via hooks) | Via hooks        |
-| Feature component | Complex UI section               | Yes (via hooks) | Via hooks        |
-| UI component      | Reusable, presentational         | No              | Never            |
-| Layout component  | Page structure (grids, wrappers) | No              | Never            |
+| Type                | Purpose                               | Has State?      | Makes API Calls?             |
+| ------------------- | ------------------------------------- | --------------- | ---------------------------- |
+| Page slice          | Route-level composition               | Yes (via hooks) | Via lower layers             |
+| Widget              | Reusable page section                 | Yes (via hooks) | Via features or entities     |
+| Feature UI          | User-facing action or workflow        | Yes (via hooks) | Via slice `model/` or `api/` |
+| Entity UI           | Entity-focused reusable block         | Yes (if needed) | Via slice `model/` or `api/` |
+| Shared UI component | Generic presentational building block | No              | Never                        |
 
 ### Component Rules
 
@@ -28,6 +31,7 @@ React + TypeScript patterns and conventions for the `frontend-developer`. These 
 - Never fetch data inside a component body — use custom hooks
 - Keep JSX concise — extract sub-components if JSX exceeds ~50 lines
 - Props must be fully typed — no implicit `any`, no prop spreading without explicit types
+- Place components in the owning FSD slice. Promote code to `shared/ui` only when it is truly generic and business-agnostic.
 
 ### Naming
 
@@ -121,7 +125,7 @@ export const authSlice = createSlice({
 
 ### Data Fetching
 
-**This project uses native `useEffect + fetch`** inside custom hooks. Do not introduce React Query, SWR, or Axios unless `project-manager` approves. Keep fetch logic inside service modules, not directly in hooks.
+**This project uses native `useEffect + fetch`** inside custom hooks. Do not introduce React Query, SWR, or Axios unless `project-manager` approves. Keep fetch logic inside the owning slice's `api/` module or `shared/api`, not directly in UI components.
 
 ### Forms
 
@@ -167,19 +171,35 @@ function UserProfile({ userId }: { userId: string }) {
 
 ```
 src/
-├── pages/              ← Route-level components (thin, delegate to features)
-├── features/           ← Feature-specific components, hooks, services
+├── app/                ← App bootstrap, routing, providers, store wiring
+│   ├── providers/
+│   ├── router/
+│   └── store/
+├── pages/              ← Route-level slices
+│   └── {page}/
+│       ├── ui/
+│       └── index.ts
+├── widgets/            ← Composed page sections
+│   └── {widget}/
+│       ├── ui/
+│       └── index.ts
+├── features/           ← User actions and flows
 │   └── {feature}/
-│       ├── components/
-│       ├── hooks/
-│       └── services/
-├── components/         ← Shared, reusable UI components
-├── hooks/              ← Shared custom hooks
-├── services/           ← API communication layer
-├── domain/             ← Business logic, types, transformations
-├── store/              ← Redux store, slices, and selectors
-├── utils/              ← Pure utility functions
-└── constants/          ← App-wide constants
+│       ├── ui/
+│       ├── model/
+│       ├── api/
+│       └── index.ts
+├── entities/           ← Business entities and related code
+│   └── {entity}/
+│       ├── ui/
+│       ├── model/
+│       ├── api/
+│       └── index.ts
+└── shared/             ← Generic UI, API utilities, config, and libs
+    ├── api/
+    ├── config/
+    ├── lib/
+    └── ui/
 ```
 
 ---
@@ -188,6 +208,8 @@ src/
 
 - Fetching data directly in component bodies
 - Business logic in JSX
+- Deep-importing another slice's internals or creating sibling-slice dependencies
+- Dumping business-specific code into `shared/`
 - Prop drilling deeper than 2 levels — use Context or composition
 - Using array index as React `key` in dynamic lists
 - Mutating state directly

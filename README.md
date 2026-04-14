@@ -18,6 +18,14 @@ The setup is organized around a Copilot agent system with a clear separation of 
 - reusable skills define standards for coding, testing, architecture, and review
 - instructions enforce workflow checkpoints, including documentation review gates
 
+## Architecture Baseline
+
+This setup assumes a deliberately simpler architecture baseline:
+
+- frontend work uses `Feature-Sliced Design (FSD)`
+- backend work uses `Clean Architecture`
+- `DDD` and `Hexagonal Architecture` are optional reference skills, not default workflow requirements
+
 The primary conventions live in:
 
 - `AGENTS.md`
@@ -69,7 +77,8 @@ Contains the role definitions for each agent, including responsibilities and han
 
 Contains the reusable standards each agent is expected to load and follow for specific tasks such as:
 
-- clean architecture
+- feature-sliced design for frontend
+- clean architecture for backend
 - frontend and backend patterns
 - testing
 - code review

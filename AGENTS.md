@@ -182,27 +182,26 @@ When delegating, agents pass context by referencing docs paths explicitly:
 
 All agents reference skills from `.github/skills/` in explicit workflow steps rather than optional top-level lists. Keep this matrix aligned with the agent files.
 
-| Skill                    | Used By                                                          |
-| ------------------------ | ---------------------------------------------------------------- |
-| `task-breakdown`         | project-manager                                                  |
-| `definition-of-done`     | project-manager, qa-lead                                         |
-| `ddd`                    | architect-lead                                                   |
-| `clean-architecture`     | architect-lead                                                   |
-| `hexagonal-architecture` | architect-lead                                                   |
-| `api-design`             | architect-lead, backend-developer, tester-integration            |
-| `database-design`        | architect-lead, backend-developer                                |
-| `coding-standards`       | dev-lead, frontend-developer, backend-developer                  |
-| `frontend-patterns`      | frontend-developer                                               |
-| `backend-patterns`       | backend-developer                                                |
-| `unit-testing`           | frontend-developer, backend-developer, dev-lead                  |
-| `integration-testing`    | tester-integration                                               |
-| `e2e-testing`            | tester-e2e                                                       |
-| `code-review`            | dev-lead                                                         |
-| `security-review`        | tester-security                                                  |
-| `performance-review`     | tester-performance                                               |
-| `usability-review`       | tester-usability                                                 |
-| `accessibility`          | designer-ui-ux, frontend-developer, tester-e2e, tester-usability |
-| `ui-design`              | designer-ui-ux, tester-usability                                 |
-| `design-system`          | designer-ui-ux, frontend-developer                               |
-| `state-management`       | frontend-developer                                               |
-| `migration`              | backend-developer                                                |
+| Skill                   | Used By                                                          |
+| ----------------------- | ---------------------------------------------------------------- |
+| `task-breakdown`        | project-manager                                                  |
+| `definition-of-done`    | project-manager, qa-lead                                         |
+| `clean-architecture`    | architect-lead, backend-developer                                |
+| `feature-sliced-design` | architect-lead, frontend-developer                               |
+| `api-design`            | architect-lead, backend-developer, tester-integration            |
+| `database-design`       | architect-lead, backend-developer                                |
+| `coding-standards`      | dev-lead, frontend-developer, backend-developer                  |
+| `frontend-patterns`     | frontend-developer                                               |
+| `backend-patterns`      | backend-developer                                                |
+| `unit-testing`          | frontend-developer, backend-developer, dev-lead                  |
+| `integration-testing`   | tester-integration                                               |
+| `e2e-testing`           | tester-e2e                                                       |
+| `code-review`           | dev-lead                                                         |
+| `security-review`       | tester-security                                                  |
+| `performance-review`    | tester-performance                                               |
+| `usability-review`      | tester-usability                                                 |
+| `accessibility`         | designer-ui-ux, frontend-developer, tester-e2e, tester-usability |
+| `ui-design`             | designer-ui-ux, tester-usability                                 |
+| `design-system`         | designer-ui-ux, frontend-developer                               |
+| `state-management`      | frontend-developer                                               |
+| `migration`             | backend-developer                                                |

@@ -1,19 +1,21 @@
 ---
 name: hexagonal-architecture
-description: Hexagonal Architecture principles for architect-lead, dev-lead, and backend developers. Complements Clean Architecture by providing explicit vocabulary for external integration points.
+description: Optional Hexagonal Architecture reference. Not part of the default architecture in this repo; use only when the user explicitly asks for ports-and-adapters modelling.
 ---
 
 # Skill: Hexagonal Architecture (Ports & Adapters)
 
 ## Purpose
 
-This skill defines Hexagonal Architecture principles for use by `architect-lead`, `dev-lead`, and backend developers. It complements Clean Architecture by providing explicit vocabulary for external integration points.
+This skill defines Hexagonal Architecture as an explicit opt-in reference for cases where the user asks for ports-and-adapters modelling.
+
+This repo does **not** apply Hexagonal Architecture by default. Backend work uses Clean Architecture unless the user explicitly opts into hexagonal terminology and structure.
 
 ---
 
 ## When to Apply
 
-Apply hexagonal architecture when:
+Apply hexagonal architecture only when the user explicitly asks for it and:
 
 - The system has multiple external integration points (databases, APIs, message queues, email, etc.)
 - You want to test business logic without spinning up real infrastructure

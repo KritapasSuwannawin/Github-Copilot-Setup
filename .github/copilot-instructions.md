@@ -23,29 +23,32 @@ These instructions apply to every Copilot interaction in this project.
 
 ## Architecture Principles
 
-Use **Clean Architecture** and **Hexagonal Architecture**. Apply **DDD** when the domain warrants it. See `.github/skills/`.
+Use **Feature-Sliced Design (FSD)** for frontend code and **Clean Architecture** for backend code. Do **not** apply **DDD** or **Hexagonal Architecture** unless the user explicitly asks for them. See `.github/skills/feature-sliced-design/SKILL.md` and `.github/skills/clean-architecture/SKILL.md`.
 
-Core rule: **dependencies point inward only**. Domain and application never import infrastructure or UI.
+Frontend rule: dependencies flow from higher FSD layers to lower ones, and slices expose a small public API.
+Backend rule: dependencies point inward only. `use-cases/` and `domain/` never import `controllers/` or `infrastructure/`.
 
-### Frontend Layers
+### Frontend Layers (Feature-Sliced Design)
 
-| Layer         | Responsibility                               |
-| ------------- | -------------------------------------------- |
-| `components/` | Pure UI — no API calls or business logic     |
-| `hooks/`      | Stateful logic, side effects, data fetching  |
-| `services/`   | API communication                            |
-| `store/`      | Global state via Redux slices and selectors  |
-| `domain/`     | Business rules, transformations, validations |
+| Layer       | Responsibility                                             |
+| ----------- | ---------------------------------------------------------- |
+| `app/`      | App bootstrap, providers, routing, and global store wiring |
+| `pages/`    | Route-level composition                                    |
+| `widgets/`  | Large UI blocks composed into pages                        |
+| `features/` | User actions and business interactions                     |
+| `entities/` | Business entities, related state, and focused UI           |
+| `shared/`   | Generic UI kit, API utilities, libraries, and config       |
 
-### Backend Layers
+### Backend Layers (Clean Architecture)
 
-| Layer             | Responsibility                               |
-| ----------------- | -------------------------------------------- |
-| `controllers/`    | HTTP in/out — parse, call use-cases, respond |
-| `use-cases/`      | Orchestrate domain logic                     |
-| `domain/`         | Entities, value objects, business rules      |
-| `repositories/`   | Interfaces for data access (ports)           |
-| `infrastructure/` | ORM, HTTP clients, adapters                  |
+| Layer             | Responsibility                                                     |
+| ----------------- | ------------------------------------------------------------------ |
+| `controllers/`    | HTTP in/out — parse requests, call use-cases, map responses        |
+| `use-cases/`      | Application workflows and business orchestration                   |
+| `domain/`         | Core business rules and domain types                               |
+| `repositories/`   | Abstract data-access contracts required by use-cases               |
+| `infrastructure/` | Framework and IO implementations such as ORM, HTTP clients, queues |
+| `shared/`         | Generic utilities, libs, and config used across layers             |
 
 ---
 

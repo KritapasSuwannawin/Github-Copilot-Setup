@@ -1,106 +1,101 @@
 ---
 name: clean-architecture
-description: Clean Architecture principles for architect-lead, dev-lead, frontend-developer, and backend-developer.
+description: Clean Architecture for architect-lead and backend-developer. Use when defining or implementing backend layers, dependency direction, use-cases, repositories, and infrastructure boundaries.
 ---
 
 # Skill: Clean Architecture
 
 ## Purpose
 
-This skill defines Clean Architecture principles for use by `architect-lead`, `dev-lead`, `frontend-developer`, and `backend-developer`.
+This skill defines the backend architecture for this repo. Use it with `architect-lead` and `backend-developer` when planning or implementing backend code.
+
+Frontend work in this repo does **not** use Clean Architecture. Frontend uses `.github/skills/feature-sliced-design/SKILL.md`.
 
 ---
 
 ## When to Apply
 
-Apply Clean Architecture when:
+Apply Clean Architecture to backend work that introduces or changes:
 
-- The system needs to be testable independently of frameworks, databases, or UI
-- You anticipate swapping infrastructure (e.g. changing ORM, switching databases)
-- You want business logic isolated from delivery mechanisms
+- Controllers or transport handlers
+- Use-case and application workflow logic
+- Domain rules
+- Repository or service interfaces
+- Infrastructure implementations such as ORM, HTTP clients, queues, or email
 
 ---
 
 ## The Core Rule: Dependency Rule
 
-> Source code dependencies must point **inward only** — toward higher-level policies.
+> Source code dependencies must point **inward only** — toward higher-level business policies.
 
-Nothing in an inner circle can know about something in an outer circle.
+In this repo's backend structure:
 
-```
-          ┌─────────────────────────┐
-          │   Frameworks & Drivers  │  ← outermost: web, DB, UI
-          │  ┌───────────────────┐  │
-          │  │   Interface       │  │  ← controllers, presenters, gateways
-          │  │  ┌─────────────┐  │  │
-          │  │  │ Application │  │  │  ← use cases
-          │  │  │  ┌───────┐  │  │  │
-          │  │  │  │Domain │  │  │  │  ← innermost: entities, business rules
-          │  │  │  └───────┘  │  │  │
-          │  │  └─────────────┘  │  │
-          │  └───────────────────┘  │
-          └─────────────────────────┘
+- `controllers/` depend on `use-cases/`
+- `use-cases/` depend on `domain/` and `repositories/`
+- `infrastructure/` implements contracts used by `use-cases/` or `repositories/`
+- `domain/` does not depend on outer layers
+
+```text
+controllers/ ─────▶ use-cases/ ─────▶ domain/
+                        │
+                        └──────▶ repositories/ ◀────── infrastructure/
 ```
 
 ---
 
 ## Layers
 
-### Domain (Innermost)
+### `domain/`
 
-- Entities and core business rules
+- Core business rules and domain types
 - No framework dependencies
-- No imports from outer layers
-- Pure TypeScript classes
+- No imports from `controllers/` or `infrastructure/`
 
-### Application
+### `use-cases/`
 
-- Use cases — one per user action
-- Orchestrates domain objects
-- Defines interfaces (ports) for things it needs from outside (repositories, services)
-- No framework dependencies
+- One use case per backend action or workflow
+- Orchestrates domain logic
+- Depends on `domain/` and repository or service interfaces only
 
-### Interface
+### `repositories/`
 
-- Controllers, resolvers, CLI handlers
-- Adapts external requests to use case inputs
-- Adapts use case outputs to external response formats
-- Depends on Application layer only
+- Abstract contracts required by `use-cases/`
+- Describe data access in business terms
+- Contain no ORM or transport details
 
-### Infrastructure (Outermost)
+### `controllers/`
 
-- Database implementations, ORM, HTTP clients, email, queues
-- Implements interfaces defined in Application layer
-- Framework-specific code lives here (NestJS modules, TypeORM entities)
+- HTTP or transport adaptation layer
+- Parse input, call a use case, map output or errors back to the transport
+- Must not contain business logic
+
+### `infrastructure/`
+
+- ORM implementations, HTTP clients, queues, email, and framework wiring
+- Implements interfaces required by the inner layers
+- Can depend on NestJS, TypeORM, and other external libraries
 
 ---
 
 ## Dependency Injection
 
 - Outer layers inject dependencies into inner layers via constructors
-- Inner layers define interfaces; outer layers provide implementations
+- Inner layers define required interfaces; outer layers provide implementations
 - Use DI containers (NestJS IoC) to wire dependencies
 
 ---
 
-## Frontend Application
-
-```
-src/
-├── domain/           ← business rules, types, validation
-├── application/      ← use cases as hooks or service functions
-├── infrastructure/   ← API clients, storage adapters
-└── ui/               ← React components (outermost)
-```
-
 ## Backend Application
 
-```
+```text
 src/
-├── domain/           ← entities, value objects, domain services
-├── application/      ← use cases, port interfaces
-├── infrastructure/   ← ORM, HTTP clients, adapters
-└── interface/        ← controllers, DTOs
+├── controllers/      ← HTTP entry points, DTOs, response mapping
+├── use-cases/        ← application workflows
+├── domain/           ← business rules and domain types
+├── repositories/     ← abstract contracts used by use-cases
+└── infrastructure/   ← ORM, HTTP clients, queues, framework adapters
+└── shared/           ← utilities, libs, and config used across layers
 ```
 
 ---
@@ -109,5 +104,6 @@ src/
 
 - Importing ORM entities into use cases
 - Business logic in controllers
+- Business logic in infrastructure implementations
 - Use cases importing from infrastructure
-- Framework decorators on domain entities
+- Introducing DDD or Hexagonal Architecture terminology by default on backend work in this repo

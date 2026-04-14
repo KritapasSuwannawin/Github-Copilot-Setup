@@ -1,26 +1,28 @@
 ---
 name: ddd
-description: Principles and patterns of Domain-Driven Design for architect-lead when designing the system, and developers when implementing domain logic.
+description: Optional Domain-Driven Design reference. Not part of the default architecture in this repo; use only when the user explicitly asks for DDD in a complex backend domain.
 ---
 
 # Skill: Domain-Driven Design (DDD)
 
 ## Purpose
 
-This skill provides the principles and patterns of Domain-Driven Design for use by the `architect-lead` when designing the system, and by developers when implementing domain logic.
+This skill provides the principles and patterns of Domain-Driven Design as an explicit opt-in reference.
+
+This repo does **not** apply DDD by default. Use this skill only when the user explicitly requests DDD or when extending backend code that already uses DDD concepts heavily.
 
 ---
 
 ## When to Apply DDD
 
-Apply DDD when:
+Apply DDD only when the user explicitly asks for it and:
 
 - The domain has complex business rules that can't be trivially modelled as CRUD
 - There are multiple distinct problem areas (bounded contexts)
 - Domain experts exist and their language should be reflected in the code
 - The system is expected to grow significantly in complexity
 
-**Do not apply** DDD to simple CRUD features, configuration screens, or pure infrastructure concerns.
+**Do not apply** DDD to standard frontend work, routine backend features in this repo, simple CRUD features, configuration screens, or pure infrastructure concerns.
 
 ---
 
