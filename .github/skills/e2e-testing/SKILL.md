@@ -1,13 +1,18 @@
 ---
 name: e2e-testing
-description: Standards and patterns for end-to-end testing with Playwright. Used by tester-e2e.
+description: Standards and patterns for end-to-end testing with Playwright. Used by frontend-developer.
 ---
 
 # Skill: E2E Testing (Playwright)
 
 ## Purpose
 
-Standards and patterns for end-to-end testing with Playwright. Used by `tester-e2e`.
+Standards and patterns for end-to-end testing with Playwright. Used by `frontend-developer` when implementing user-facing flows that need browser-level coverage.
+
+## Available Tooling
+
+- The Playwright MCP server is available to use in this environment.
+- Use Playwright MCP for browser-backed validation, artifact capture, and flow debugging before or while codifying coverage in Playwright tests.
 
 ---
 

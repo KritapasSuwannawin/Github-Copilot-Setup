@@ -22,20 +22,18 @@ See `.github/instructions/agent-output-review.instructions.md` for implementatio
 
 Agents are available at `.github/agents/`. Each agent has a specific role and responsibilities.
 
-| Agent                | Role                                                                                |
-| -------------------- | ----------------------------------------------------------------------------------- |
-| `project-manager`    | Entry point. Coordinates all agents. Owns the task breakdown.                       |
-| `architect-lead`     | Decides which architecture principles apply and produces architecture docs.         |
-| `designer-ui-ux`     | Produces UI/UX designs, wireframes, and component specs.                            |
-| `dev-lead`           | Governs frontend and backend developers. Performs code review and unit test review. |
-| `frontend-developer` | Implements frontend features. Writes unit tests.                                    |
-| `backend-developer`  | Implements backend features. Writes unit tests.                                     |
-| `qa-lead`            | Governs all testers. Owns pass/fail verdict.                                        |
-| `tester-integration` | Tests service boundaries and contracts.                                             |
-| `tester-e2e`         | Tests full user flows with Playwright.                                              |
-| `tester-security`    | Audits for vulnerabilities and security issues.                                     |
-| `tester-performance` | Audits frontend and backend performance.                                            |
-| `tester-usability`   | Evaluates UX quality and usability heuristics.                                      |
+| Agent                | Role                                                                                     |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| `project-manager`    | Entry point. Coordinates all agents. Owns the task breakdown.                            |
+| `architect-lead`     | Decides which architecture principles apply and produces architecture docs.              |
+| `designer-ui-ux`     | Produces UI/UX designs, wireframes, and component specs.                                 |
+| `dev-lead`           | Governs frontend and backend developers. Performs code review and test review.           |
+| `frontend-developer` | Implements frontend features. Writes unit and E2E tests.                                 |
+| `backend-developer`  | Implements backend features. Writes unit and integration tests.                          |
+| `qa-lead`            | Reviews developer test evidence, governs specialist testers, and owns pass/fail verdict. |
+| `tester-security`    | Audits for vulnerabilities and security issues.                                          |
+| `tester-performance` | Audits frontend and backend performance.                                                 |
+| `tester-usability`   | Evaluates UX quality and usability heuristics.                                           |
 
 ---
 
@@ -43,7 +41,7 @@ Agents are available at `.github/agents/`. Each agent has a specific role and re
 
 | MCP                   | Primary agents                                                            | Use when                                                                                                                             | Required evidence                                                                                                                 |
 | --------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| `Playwright MCP`      | `tester-e2e`, `tester-usability`                                          | A task needs browser-backed validation of user flows, UI states, or reproducible issue replay                                        | Screenshots for key states, traces on failure, and video for hard-to-reproduce or long-running flows when requested in `tasks.md` |
+| `Playwright MCP`      | `frontend-developer`, `tester-usability`                                  | A task needs browser-backed validation of user flows, UI states, or reproducible issue replay                                        | Screenshots for key states, traces on failure, and video for hard-to-reproduce or long-running flows when requested in `tasks.md` |
 | `Chrome DevTools MCP` | `tester-performance`, `tester-security`, `frontend-developer`, `dev-lead` | A running application needs runtime inspection for rendering, networking, console, performance, or browser-visible security behavior | Performance trace, network or header evidence, console snapshot, and memory or Lighthouse/CWV snapshot when relevant              |
 | `Context7`            | `architect-lead`, `dev-lead`, `frontend-developer`, `backend-developer`   | A task depends on external framework or library APIs, new dependencies, or ambiguous vendor guidance                                 | Library, version or docs ID, and topic consulted in `architecture.md`, `dev-summary.md`, or review notes                          |
 | `Figma MCP`           | `designer-ui-ux`, `tester-usability`, `frontend-developer`                | The user provides a Figma link or explicitly asks to work from Figma                                                                 | Cited frame, component, or token references in `ui-spec.md`, plus comparison evidence when design parity is reviewed              |
@@ -70,12 +68,10 @@ User
        └─▶ per task:
              ├─▶ designer-ui-ux (skip if task has no user-facing UI)    → .github/docs/{feature}/{task}/ui-spec.md
              ├─▶ dev-lead
-             │     ├─▶ frontend-developer
-             │     ├─▶ backend-developer
-             │     └─▶ [code review + unit test review by dev-lead]     → .github/docs/{feature}/{task}/dev-summary.md
+             │     ├─▶ frontend-developer → implementation + unit/E2E tests
+             │     ├─▶ backend-developer  → implementation + unit/integration tests
+             │     └─▶ [code review + test review by dev-lead]          → .github/docs/{feature}/{task}/dev-summary.md
              └─▶ qa-lead
-                   ├─▶ tester-integration
-                   ├─▶ tester-e2e
                    ├─▶ tester-security
                    ├─▶ tester-performance
                    ├─▶ tester-usability
@@ -93,11 +89,10 @@ For low-risk, urgent fixes that do not introduce new features or change architec
 User
  └─▶ project-manager (fast-track mode)
        ├─▶ dev-lead
-       │     ├─▶ frontend-developer / backend-developer
+       │     ├─▶ frontend-developer / backend-developer (+ required E2E/integration tests)
        │     └─▶ [code review by dev-lead]
        └─▶ qa-lead (reduced scope)
-             ├─▶ tester-integration  (always)
-             ├─▶ tester-security     (if auth or data is touched)
+             ├─▶ tester-security    (if auth or data is touched)
              └─▶ [verdict]
 ```
 
@@ -182,26 +177,26 @@ When delegating, agents pass context by referencing docs paths explicitly:
 
 All agents reference skills from `.github/skills/` in explicit workflow steps rather than optional top-level lists. Keep this matrix aligned with the agent files.
 
-| Skill                   | Used By                                                          |
-| ----------------------- | ---------------------------------------------------------------- |
-| `task-breakdown`        | project-manager                                                  |
-| `definition-of-done`    | project-manager, qa-lead                                         |
-| `clean-architecture`    | architect-lead, backend-developer                                |
-| `feature-sliced-design` | architect-lead, frontend-developer                               |
-| `api-design`            | architect-lead, backend-developer, tester-integration            |
-| `database-design`       | architect-lead, backend-developer                                |
-| `coding-standards`      | dev-lead, frontend-developer, backend-developer                  |
-| `frontend-patterns`     | frontend-developer                                               |
-| `backend-patterns`      | backend-developer                                                |
-| `unit-testing`          | frontend-developer, backend-developer, dev-lead                  |
-| `integration-testing`   | tester-integration                                               |
-| `e2e-testing`           | tester-e2e                                                       |
-| `code-review`           | dev-lead                                                         |
-| `security-review`       | tester-security                                                  |
-| `performance-review`    | tester-performance                                               |
-| `usability-review`      | tester-usability                                                 |
-| `accessibility`         | designer-ui-ux, frontend-developer, tester-e2e, tester-usability |
-| `ui-design`             | designer-ui-ux, tester-usability                                 |
-| `design-system`         | designer-ui-ux, frontend-developer                               |
-| `state-management`      | frontend-developer                                               |
-| `migration`             | backend-developer                                                |
+| Skill                   | Used By                                              |
+| ----------------------- | ---------------------------------------------------- |
+| `task-breakdown`        | project-manager                                      |
+| `definition-of-done`    | project-manager, qa-lead                             |
+| `clean-architecture`    | architect-lead, backend-developer                    |
+| `feature-sliced-design` | architect-lead, frontend-developer                   |
+| `api-design`            | architect-lead, backend-developer                    |
+| `database-design`       | architect-lead, backend-developer                    |
+| `coding-standards`      | dev-lead, frontend-developer, backend-developer      |
+| `frontend-patterns`     | frontend-developer                                   |
+| `backend-patterns`      | backend-developer                                    |
+| `unit-testing`          | frontend-developer, backend-developer, dev-lead      |
+| `integration-testing`   | backend-developer                                    |
+| `e2e-testing`           | frontend-developer                                   |
+| `code-review`           | dev-lead                                             |
+| `security-review`       | tester-security                                      |
+| `performance-review`    | tester-performance                                   |
+| `usability-review`      | tester-usability                                     |
+| `accessibility`         | designer-ui-ux, frontend-developer, tester-usability |
+| `ui-design`             | designer-ui-ux, tester-usability                     |
+| `design-system`         | designer-ui-ux, frontend-developer                   |
+| `state-management`      | frontend-developer                                   |
+| `migration`             | backend-developer                                    |

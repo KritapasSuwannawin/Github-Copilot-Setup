@@ -41,12 +41,14 @@ The Definition of Done (DoD) is the shared standard that determines when a task 
 
 - [ ] Unit tests written for all non-trivial logic
 - [ ] Unit tests passing
+- [ ] Required integration tests written and passing
+- [ ] Required E2E tests written and passing
 - [ ] No tests skipped without justification
 
 ### Review
 
 - [ ] `dev-lead` code review: PASS
-- [ ] `dev-lead` unit test review: PASS
+- [ ] `dev-lead` required test review: PASS
 
 ## MCP Evidence
 
@@ -84,9 +86,9 @@ The Definition of Done (DoD) is the shared standard that determines when a task 
 
 All of the above, plus:
 
-- [ ] `tester-unit`: PASS
-- [ ] `tester-integration`: PASS
-- [ ] `tester-e2e`: PASS
+- [ ] Required unit tests: PASS
+- [ ] Required backend integration tests: PASS
+- [ ] Required frontend E2E tests: PASS
 - [ ] `tester-security`: PASS (if applicable)
 - [ ] `tester-performance`: PASS (if applicable)
 - [ ] `tester-usability`: PASS (if applicable)

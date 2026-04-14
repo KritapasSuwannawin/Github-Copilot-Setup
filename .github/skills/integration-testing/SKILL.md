@@ -1,13 +1,13 @@
 ---
 name: integration-testing
-description: Standards for integration tests. Verifies that components work correctly together at their boundaries. Used by tester-integration.
+description: Standards for integration tests. Verifies that components work correctly together at their boundaries. Used by backend-developer.
 ---
 
 # Skill: Integration Testing
 
 ## Purpose
 
-Standards for integration tests — verifying that components work correctly together at their boundaries. Used by `tester-integration`.
+Standards for integration tests — verifying that components work correctly together at their boundaries. Used by `backend-developer` when implementing backend features that touch service boundaries, endpoints, or persistence.
 
 ---
 
