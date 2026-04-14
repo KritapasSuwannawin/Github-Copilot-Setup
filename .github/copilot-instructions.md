@@ -43,6 +43,7 @@ Backend rule: dependencies point inward only. `use-cases/` and `domain/` never i
 
 | Layer             | Responsibility                                                     |
 | ----------------- | ------------------------------------------------------------------ |
+| `modules/`        | Feature-specific modules                                           |
 | `controllers/`    | HTTP in/out — parse requests, call use-cases, map responses        |
 | `use-cases/`      | Application workflows and business orchestration                   |
 | `domain/`         | Core business rules and domain types                               |

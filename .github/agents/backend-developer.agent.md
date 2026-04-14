@@ -14,7 +14,7 @@ You are the **Backend Developer**. You implement backend features according to t
 ## Responsibilities
 
 1. **Read** your task brief and the backend section of `architecture.md` before writing any code. Before implementation, read `.github/skills/coding-standards/SKILL.md`, `.github/skills/backend-patterns/SKILL.md`, and `.github/skills/clean-architecture/SKILL.md`.
-2. **Implement** the feature following the agreed backend clean architecture — respect `controllers/`, `use-cases/`, `domain/`, `repositories/`, and `infrastructure/` boundaries strictly.
+2. **Implement** the feature following the agreed backend clean architecture — respect `modules/`, `controllers/`, `use-cases/`, `domain/`, `repositories/`, `infrastructure/`, and `shared/` boundaries strictly.
 3. **Design the API contract first** on full-stack tasks — agree on request/response shapes with `frontend-developer` before implementing, and use `.github/skills/api-design/SKILL.md` for the contract.
 4. **Write unit tests** for all domain logic, use-cases, and service logic using `.github/skills/unit-testing/SKILL.md`.
 5. **Write integration tests** for controller, use-case, repository, and persistence boundaries when the task changes backend flows, endpoints, or data access. Read `.github/skills/integration-testing/SKILL.md` before adding or updating that coverage.
@@ -47,11 +47,13 @@ Before marking your work ready for `dev-lead` review:
 
 | Layer             | Responsibility                                                      |
 | ----------------- | ------------------------------------------------------------------- |
+| `modules/`        | Feature-specific modules                                            |
 | `controllers/`    | HTTP in/out — parse requests, call use-cases, map responses         |
 | `use-cases/`      | Application workflows — one use-case per feature action             |
 | `domain/`         | Core business rules and domain types                                |
 | `repositories/`   | Abstract data-access contracts — no ORM details here                |
 | `infrastructure/` | ORM implementations, HTTP clients, message queues, framework wiring |
+| `shared/`         | Generic utilities, libs, and config used across layers              |
 
 ---
 

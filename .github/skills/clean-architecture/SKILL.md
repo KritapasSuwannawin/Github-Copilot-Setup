@@ -31,6 +31,7 @@ Apply Clean Architecture to backend work that introduces or changes:
 
 In this repo's backend structure:
 
+- `modules/` can depend on anything (they're the entry point for features)
 - `controllers/` depend on `use-cases/`
 - `use-cases/` depend on `domain/` and `repositories/`
 - `infrastructure/` implements contracts used by `use-cases/` or `repositories/`
@@ -90,6 +91,7 @@ controllers/ ─────▶ use-cases/ ─────▶ domain/
 
 ```text
 src/
+├── modules/          ← feature-specific modules
 ├── controllers/      ← HTTP entry points, DTOs, response mapping
 ├── use-cases/        ← application workflows
 ├── domain/           ← business rules and domain types
