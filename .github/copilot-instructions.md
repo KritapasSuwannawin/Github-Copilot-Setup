@@ -89,8 +89,7 @@ Full standards: `.github/skills/coding-standards/SKILL.md`
 When the user asks you to implement something by referencing a file or task:
 
 1. **Track the work** — Use the todo list tool if managing multiple steps
-2. **Complete the implementation** — Follow all applicable skills, standards, and architecture principles
-3. **Mark as completed immediately** — Update the todo list to show completion as soon as the task is done
-4. **Confirm completion** — Briefly confirm what was finished
-
-Do not batch completions. Mark each task as completed individually and immediately upon finishing.
+2. **Mark as in progress** — Update the todo list to show the task is being worked on
+3. **Complete the implementation** — Follow all applicable skills, standards, and architecture principles
+4. **Mark as completed** — Update the todo list to show completion as soon as the task is done
+5. **Confirm completion** — Briefly confirm what was finished
